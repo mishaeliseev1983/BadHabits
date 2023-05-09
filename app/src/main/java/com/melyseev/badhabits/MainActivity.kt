@@ -22,19 +22,22 @@ class MainActivity : AppCompatActivity() {
         resetBtn.setOnClickListener {
             sharedPref.edit().putLong("time",  System.currentTimeMillis()).apply()
             textView.text = "0"
+            resetBtn.visibility = View.GONE
         }
 
         var days = 0
         if(time == -1L){
             sharedPref.edit().putLong("time", System.currentTimeMillis()).apply()
             textView.text = "0"
+            resetBtn.visibility = View.GONE
         }else{
             val diffSeconds = (System.currentTimeMillis() - time) / 1_000
             days = (diffSeconds / (24 * 3_600)).toInt()
+            if(days == 0)
+                resetBtn.visibility = View.VISIBLE
             textView.text = days.toString()
         }
-        if(days == 0)
-            resetBtn.visibility = View.GONE
+
 
 
 
