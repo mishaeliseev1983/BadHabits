@@ -15,28 +15,41 @@ class MainActivity : AppCompatActivity() {
 
 
         val textView = findViewById<TextView>(R.id.mainText)
-        val sharedPref = getSharedPreferences("main", Context.MODE_PRIVATE)
-        val time = sharedPref.getLong("time", -1)
+        val buttonReset = findViewById<Button>(R.id.resetButton)
 
-        val resetBtn =  findViewById<Button>(R.id.resetButton)
-        resetBtn.setOnClickListener {
-            sharedPref.edit().putLong("time",  System.currentTimeMillis()).apply()
-            textView.text = "0"
-            resetBtn.visibility = View.GONE
+        val viewModel = (application as ProvideViewModel).provideViewModel()
+
+        viewModel.observe(this){
+            it.apply( textView, buttonReset)
         }
 
-        var days = 0
-        if(time == -1L){
-            sharedPref.edit().putLong("time", System.currentTimeMillis()).apply()
-            textView.text = "0"
-            resetBtn.visibility = View.GONE
-        }else{
-            val diffSeconds = (System.currentTimeMillis() - time) / 1_000
-            days = (diffSeconds / (24 * 3_600)).toInt()
-            if(days == 0)
-                resetBtn.visibility = View.VISIBLE
-            textView.text = days.toString()
+        buttonReset.setOnClickListener {
+            viewModel.reset()
         }
+        viewModel.init(savedInstanceState == null)
+
+
+//        val time = sharedPref.getLong("time", -1)
+//
+//        val resetBtn =  findViewById<Button>(R.id.resetButton)
+//        resetBtn.setOnClickListener {
+//            sharedPref.edit().putLong("time",  System.currentTimeMillis()).apply()
+//            textView.text = "0"
+//            resetBtn.visibility = View.GONE
+//        }
+//
+//        var days = 0
+//        if(time == -1L){
+//            sharedPref.edit().putLong("time", System.currentTimeMillis()).apply()
+//            textView.text = "0"
+//            resetBtn.visibility = View.GONE
+//        }else{
+//            val diffSeconds = (System.currentTimeMillis() - time) / 1_000
+//            days = (diffSeconds / (24 * 3_600)).toInt()
+//            if(days == 0)
+//                resetBtn.visibility = View.VISIBLE
+//            textView.text = days.toString()
+//        }
 
 
 
